@@ -1,0 +1,97 @@
+--- /home/xiaobai/Downloads/youtube-dl/2/youtube-dl/youtube_dl/utils.py	2020-08-02 12:27:34.878210249 +0800
++++ /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl-2020.7.28-py3.6.egg/youtube_dl/utils.py	2020-08-03 01:27:05.159248862 +0800
+@@ -5704,3 +5704,94 @@
+         month_field: str(random_date.month),
+         day_field: str(random_date.day),
+     }
++
++
++# hole patch
++import platform
++from pathlib import PurePath, Path
++plat = platform.system().lower()
++if ('window' in plat) or plat.startswith('win'):
++    IS_WIN = True
++else:
++    IS_WIN = False
++WIN_MAX_PATH = 255 # not really working if no \\?\\ prefix in full path
++
++def get_max_path(arg_cut, fs_f_max, fpart_excluded_immutable, immutable, replace_dot):
++    #print('before f: ' + fpart_excluded_immutable)
++    if arg_cut >= 0:
++        fpart_excluded_immutable = fpart_excluded_immutable[:arg_cut]
++    if immutable:
++        # immutable shouldn't limit to 1 byte(may be change next time or next project), so need encode also
++        immutable_len = len(immutable.encode('utf-8'))
++    else:
++        immutable_len = 0
++
++    space_remains = fs_f_max - immutable_len
++    if space_remains < 1:
++        return '' # No more spaces to trim(bcoz directories name too long), so only shows PinID.jpg
++
++    # range([start], stop[, step])
++    # -1 step * 4 loop = -4, means looping 4 bytes(UTF-8 max) from right to left
++    for gostan in range(space_remains, space_remains - 4, -1):
++        try:
++            fpart_excluded_immutable = fpart_excluded_immutable.encode('utf-8')[: gostan ].decode('utf-8')
++            break # No break still same result, but waste
++        except UnicodeDecodeError:
++            pass #print('Calm down, this is normal: ' + str(gostan) + ' f: ' + fpart_excluded_immutable)
++    #print('after f: ' + fpart_excluded_immutable)
++    # Last safety resort, in case any bug:
++    if replace_dot:
++        fpart_excluded_immutable_base = sanitize_patch ( fpart_excluded_immutable ) 
++        if fpart_excluded_immutable_base != fpart_excluded_immutable.strip(): # Original need strip bcoz it might cut in space
++            print('\n[! A] Please report to me which Link/scenario it print this log.\
++                Thanks:\n{} # {} # {} # {} # {} \n\n' \
++                .format(arg_cut, fs_f_max, repr(fpart_excluded_immutable), repr(fpart_excluded_immutable_base), immutable), end='' )  
++        return fpart_excluded_immutable_base
++    else:
++        return fpart_excluded_immutable
++
++
++def sanitize_patch(path):
++    # trim multiple whitespaces # ".." is the responsibilities of get max path
++    #If using .replace('  ', ' ') will only replace once round, e.g. '    ' become 
++    path = ' '.join(path.split()) 
++
++    if IS_WIN:
++        # Use PurePath instead of os.path.basename  https://stackoverflow.com/a/31273488/1074998 , e.g.:
++        #>>> PurePath( '/home/iced/..'.replace('..', '') ).parts[-1] # get 'iced'
++        #>>> os.path.basename('/home/iced/..'.replace('..', '')) # get empty ''
++        # Ensure .replace('..', '') is last replacement before .strip() AND not replace back to dot '.'
++        # https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file
++        p = PurePath( path.replace('<', '').replace('>', '').replace('"', '\'').replace('?', '').replace('*', '').replace('/', '_').replace('\\', '_').replace('|', '_').replace(':', '_').replace('.', '_').strip() )
++        if p.parts:
++            return p.parts[-1]
++        else:
++            return ''
++    else:
++        p = PurePath( path.replace('/', '|').replace(':', '_').replace('.', '_').strip() )
++        if p.parts:
++            return p.parts[-1]
++        else:
++            return ''
++
++
++def get_fs_max():
++    fs_f_max = None
++    if IS_WIN: # Sorry but I don't bother to fix WIN_MAX_PATH which nid prefix \\?\\ in full path
++        fs_f_max = WIN_MAX_PATH
++    else:
++        # 255 bytes is normaly fs max, 242 is docker max, 143 bytes is eCryptfs max
++        # If IS_WIN check here then need add \\?\\ for WIN-only
++        for fs_f_max_i in (255, 242, 143):
++            try:
++                with open('A'*fs_f_max_i, 'r') as f:
++                    fs_f_max = fs_f_max_i # if got really this long A exists will come here
++                    break
++            except FileNotFoundError:
++                fs_f_max = fs_f_max_i # Normally came here in first loop
++                break
++            except OSError: # e.g. File name too long
++                pass
++        if fs_f_max is None:
++            fs_f_max = os.statvfs('.').f_namemax
++    return fs_f_max
