@@ -668,8 +668,7 @@ class YoutubeDL(object):
             outtmpl = self.params.get('outtmpl', DEFAULT_OUTTMPL)
 
             #''' 
-            # [1] Only do for python 3 and Linux-like systems
-            # [2] Hard code output format to current directory
+            # Note: Only do for python 3 and Linux-like systems
             #print('hole style')
             path = Path(outtmpl)
             save_dir = str(path.parent)
@@ -678,6 +677,7 @@ class YoutubeDL(object):
             fs_f_max = get_fs_max()
             #print('fs_f_max: ' + str(fs_f_max))
             # must hard code some max such as 30 for .ext which is last resort if all empty
+            # No need worry if [:30] means 30*4 bytes unicode, because slice is per unicode glyph
             format_name = format_name.strip()
             if format_name:
                 format_name = sanitize_patch(format_name).strip()[:30].strip()
