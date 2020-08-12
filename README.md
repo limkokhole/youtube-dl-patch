@@ -5,6 +5,8 @@ my patch to youtube-dl
 I don't play with complicated format, only hard-coded my desired output format `'./%(title)s-%(upload_date)s-%(id)s.%(ext)s'`
 Longer filename will truncated and endswith ... in title part.  
 A small issue I noticed is .part (5 bytes) is waste the filename space, why not make it .p or .tmp when converting, or better pass another longer name after converted?  
+
+[IMPORANT NOTICE] this patch not deal for .format +.frag filenames, such as .f251_xxx.frag which called from other functions, I already noticed it long time ago and will do it later.
   
         
     Patch based on file at:  
