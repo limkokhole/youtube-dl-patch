@@ -1,5 +1,5 @@
---- /home/xiaobai/Downloads/youtube-dl/latest_git/youtube-dl/build/lib/youtube_dl/downloader/fragment.py	2019-09-11 23:23:22.000000000 +0800
-+++ /home/xiaobai/.virtualenvs/youtubedlbuild/lib/python3.6/site-packages/youtube_dl-2020.7.28-py3.6.egg/youtube_dl/downloader/fragment.py	2020-09-01 04:50:12.805865676 +0800
+--- fragment.py.orig	2020-09-01 04:54:29.484926159 +0800
++++ fragment.py	2020-09-01 05:09:15.941704446 +0800
 @@ -18,6 +18,11 @@
      def to_screen(self, *args, **kargs):
          pass
@@ -32,9 +32,9 @@
 +        fpart = get_max_path(arg_cut, fs_f_max, tp, t + redundant_part, False) + t
 +        #fragment_filename = '%s-Frag%d' % (tp, ctx['fragment_index'])
 +        fragment_filename = os.path.abspath( os.path.join(tpd, '{}'.format( fpart )) )
-+        print('frm pre: ' + repr(fragment_filename))
++        #print('frm pre: ' + repr(fragment_filename))
 +        fragment_filename = sanitize_path(fragment_filename)
-+        print('frm post: ' + repr(fragment_filename))
++        #print('frm post: ' + repr(fragment_filename))
 +
          success = ctx['dl'].download(fragment_filename, {
              'url': frag_url,

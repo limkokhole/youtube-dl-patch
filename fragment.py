@@ -116,9 +116,9 @@ class FragmentFD(FileDownloader):
         fpart = get_max_path(arg_cut, fs_f_max, tp, t + redundant_part, False) + t
         #fragment_filename = '%s-Frag%d' % (tp, ctx['fragment_index'])
         fragment_filename = os.path.abspath( os.path.join(tpd, '{}'.format( fpart )) )
-        print('frm pre: ' + repr(fragment_filename))
+        #print('frm pre: ' + repr(fragment_filename))
         fragment_filename = sanitize_path(fragment_filename)
-        print('frm post: ' + repr(fragment_filename))
+        #print('frm post: ' + repr(fragment_filename))
 
         success = ctx['dl'].download(fragment_filename, {
             'url': frag_url,
