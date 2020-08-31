@@ -692,7 +692,15 @@ class YoutubeDL(object):
             if not dat:
                 dat = 'NA'
             template_dict['id'] = sanitize_patch( str(template_dict['id']) )
-            immutable = sanitize_patch( '-' + dat + '-' + template_dict['id'] + '.' +  ext + '.part')
+            # got 2 places(possibly more places) blindly add extension without re-calculate the length to fit maximum filemena of fielsystem
+            # fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index']) , line #99 of downloader/fragment.py
+            # return filename + '.part' , line #188 of downloader/common.py
+            #
+            # So, possible 2 .part and 1 frag such as '.mp4.part-Frag0.part', so nid must patch fragN of fragment.py since N can be 1000++ without fixed width and must sacrifice 10 bytes without too much changes (Lesson learned: Shouldn't pass filename as single string to next level instead of class with title/id/date/extension/temporary_extension/...etc fields, it causes next level hard to determine which part is extension which suppose immutable, which part is title which ok to strip to fit filename maximum length of filesystem). And single filename means not possible to have 2 different structure of filenames when doing temporary stuff without blindly append new suffix which causes filename maximum length exceed.
+            # fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index']) , line #99 of downloader/fragment.py
+            # return filename + '.part' , line #188 of downloader/common.py
+            immutable = sanitize_patch( '-' + dat + '-' + template_dict['id'] + '.' +  ext + '.part.part')
+            print('imm: ' + immutable)
             #print('title: ' + template_dict['title'])
             fpart_excluded_ext_before  = sanitize_patch( template_dict['title'] )
             fpart_excluded_ext = get_max_path(arg_cut, fs_f_max, fpart_excluded_ext_before, immutable, True)
