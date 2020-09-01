@@ -672,7 +672,7 @@ class YoutubeDL(object):
             #print('hole style')
             path = Path(outtmpl)
             save_dir = str(path.parent)
-            print('save into: ' + repr(save_dir))
+            #print('save into: ' + repr(save_dir))
             arg_cut = -1
             fs_f_max = get_fs_max()
             #print('fs_f_max: ' + str(fs_f_max))
@@ -699,11 +699,12 @@ class YoutubeDL(object):
             # So, possible 2 .part and 1 frag such as '.mp4.part-Frag0.part', so nid must patch fragN of fragment.py since N can be 1000++ without fixed width and must sacrifice 10 bytes without too much changes (Lesson learned: Shouldn't pass filename as single string to next level instead of class with title/id/date/extension/temporary_extension/...etc fields, it causes next level hard to determine which part is extension which suppose immutable, which part is title which ok to strip to fit filename maximum length of filesystem). And single filename means not possible to have 2 different structure of filenames when doing temporary stuff without blindly append new suffix which causes filename maximum length exceed.
             # fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index']) , line #99 of downloader/fragment.py
             # return filename + '.part' , line #188 of downloader/common.py
-            immutable = sanitize_patch( '-' + dat + '-' + template_dict['id'] + '.' +  ext + '.part.part')
-            print('imm: ' + immutable)
+            #immutable = sanitize_patch( '-' + dat + '-' + template_dict['id'] + '.' +  ext + '.part.part')
+            immutable = sanitize_patch( '-' + dat + '-' + template_dict['id'] + '.' +  ext + '.part') # '.part 'or '.ytdl' to cover file extension later
+            #print('imm: ' + immutable)
             #print('title: ' + template_dict['title'])
             fpart_excluded_ext_before  = sanitize_patch( template_dict['title'] )
-            fpart_excluded_ext = get_max_path(arg_cut, fs_f_max, fpart_excluded_ext_before, immutable, True)
+            fpart_excluded_ext = get_max_path(fs_f_max, fpart_excluded_ext_before, immutable, False)
             if fpart_excluded_ext:
                 if fpart_excluded_ext_before == fpart_excluded_ext: # means not truncat
                     # Prevent confuse when trailing period become '..'ext and looks like '...'
@@ -713,17 +714,17 @@ class YoutubeDL(object):
                     # No need care if two/three/... dots, overkill to trim more and loss information
                     if fpart_excluded_ext[-1] == '.':
                         fpart_excluded_ext = fpart_excluded_ext[:-1]
-                    fpart_excluded_ext = get_max_path(arg_cut, fs_f_max, fpart_excluded_ext
-                        , '...' + immutable, True)
+                    fpart_excluded_ext = get_max_path(fs_f_max, fpart_excluded_ext
+                        , '...' + immutable, False)
 
                     fpart_excluded_ext = fpart_excluded_ext + '...'
 
             #print('vid: '+ repr(template_dict['id']))
             #print('fpart: ' + repr(fpart_excluded_ext + '.' +  ext))
             # In case date + video id very long, just remains .ext as last resort:
-            fpart = get_max_path(arg_cut, fs_f_max, fpart_excluded_ext +  '-' + dat + '-' + template_dict['id'], '.' + ext, False) + '.' + ext
+            fpart = get_max_path(fs_f_max, fpart_excluded_ext +  '-' + dat + '-' + template_dict['id'], '.' + ext, False) + '.' + ext
             filename = os.path.abspath( os.path.join(save_dir, '{}'.format( fpart )) )
-            print('hole fname: ' + repr(filename))
+            #print('hole fname: ' + repr(filename))
             return sanitize_path(filename)
             #'''
 
@@ -2001,6 +2002,8 @@ class YoutubeDL(object):
                     # Just a single file
                     success = dl(filename, info_dict)
             except (compat_urllib_error.URLError, compat_http_client.HTTPException, socket.error) as err:
+                import traceback
+                print(traceback.format_exc())
                 self.report_error('unable to download video data: %s' % error_to_compat_str(err))
                 return
             except (OSError, IOError) as err:

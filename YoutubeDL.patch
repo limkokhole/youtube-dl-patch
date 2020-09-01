@@ -1,5 +1,5 @@
---- /home/xiaobai/Downloads/youtube-dl/latest_git/youtube-dl/build/lib/youtube_dl/YoutubeDL.py	2020-08-01 13:46:49.000000000 +0800
-+++ /home/xiaobai/.virtualenvs/youtubedlbuild/lib/python3.6/site-packages/youtube_dl-2020.7.28-py3.6.egg/youtube_dl/YoutubeDL.py	2020-09-01 04:12:56.254807904 +0800
+--- YoutubeDL.py.orig	2020-08-03 01:59:36.281413712 +0800
++++ YoutubeDL.py	2020-09-01 21:24:18.016665176 +0800
 @@ -42,6 +42,10 @@
      compat_urllib_request,
      compat_urllib_request_DataHandler,
@@ -30,7 +30,7 @@
          """Generate the output filename."""
          try:
              template_dict = dict(info_dict)
-@@ -660,6 +667,68 @@
+@@ -660,6 +667,69 @@
  
              outtmpl = self.params.get('outtmpl', DEFAULT_OUTTMPL)
  
@@ -39,7 +39,7 @@
 +            #print('hole style')
 +            path = Path(outtmpl)
 +            save_dir = str(path.parent)
-+            print('save into: ' + repr(save_dir))
++            #print('save into: ' + repr(save_dir))
 +            arg_cut = -1
 +            fs_f_max = get_fs_max()
 +            #print('fs_f_max: ' + str(fs_f_max))
@@ -66,11 +66,12 @@
 +            # So, possible 2 .part and 1 frag such as '.mp4.part-Frag0.part', so nid must patch fragN of fragment.py since N can be 1000++ without fixed width and must sacrifice 10 bytes without too much changes (Lesson learned: Shouldn't pass filename as single string to next level instead of class with title/id/date/extension/temporary_extension/...etc fields, it causes next level hard to determine which part is extension which suppose immutable, which part is title which ok to strip to fit filename maximum length of filesystem). And single filename means not possible to have 2 different structure of filenames when doing temporary stuff without blindly append new suffix which causes filename maximum length exceed.
 +            # fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index']) , line #99 of downloader/fragment.py
 +            # return filename + '.part' , line #188 of downloader/common.py
-+            immutable = sanitize_patch( '-' + dat + '-' + template_dict['id'] + '.' +  ext + '.part.part')
-+            print('imm: ' + immutable)
++            #immutable = sanitize_patch( '-' + dat + '-' + template_dict['id'] + '.' +  ext + '.part.part')
++            immutable = sanitize_patch( '-' + dat + '-' + template_dict['id'] + '.' +  ext + '.part') # '.part 'or '.ytdl' to cover file extension later
++            #print('imm: ' + immutable)
 +            #print('title: ' + template_dict['title'])
 +            fpart_excluded_ext_before  = sanitize_patch( template_dict['title'] )
-+            fpart_excluded_ext = get_max_path(arg_cut, fs_f_max, fpart_excluded_ext_before, immutable, True)
++            fpart_excluded_ext = get_max_path(fs_f_max, fpart_excluded_ext_before, immutable, False)
 +            if fpart_excluded_ext:
 +                if fpart_excluded_ext_before == fpart_excluded_ext: # means not truncat
 +                    # Prevent confuse when trailing period become '..'ext and looks like '...'
@@ -80,17 +81,17 @@
 +                    # No need care if two/three/... dots, overkill to trim more and loss information
 +                    if fpart_excluded_ext[-1] == '.':
 +                        fpart_excluded_ext = fpart_excluded_ext[:-1]
-+                    fpart_excluded_ext = get_max_path(arg_cut, fs_f_max, fpart_excluded_ext
-+                        , '...' + immutable, True)
++                    fpart_excluded_ext = get_max_path(fs_f_max, fpart_excluded_ext
++                        , '...' + immutable, False)
 +
 +                    fpart_excluded_ext = fpart_excluded_ext + '...'
 +
 +            #print('vid: '+ repr(template_dict['id']))
 +            #print('fpart: ' + repr(fpart_excluded_ext + '.' +  ext))
 +            # In case date + video id very long, just remains .ext as last resort:
-+            fpart = get_max_path(arg_cut, fs_f_max, fpart_excluded_ext +  '-' + dat + '-' + template_dict['id'], '.' + ext, False) + '.' + ext
++            fpart = get_max_path(fs_f_max, fpart_excluded_ext +  '-' + dat + '-' + template_dict['id'], '.' + ext, False) + '.' + ext
 +            filename = os.path.abspath( os.path.join(save_dir, '{}'.format( fpart )) )
-+            print('hole fname: ' + repr(filename))
++            #print('hole fname: ' + repr(filename))
 +            return sanitize_path(filename)
 +            #'''
 +
@@ -99,7 +100,7 @@
              # For fields playlist_index and autonumber convert all occurrences
              # of %(field)s to %(field)0Nd for backward compatibility
              field_size_compat_map = {
-@@ -709,7 +778,10 @@
+@@ -709,7 +779,10 @@
              # be expanded. For example, for outtmpl "%(title)s.%(ext)s" and
              # title "Hello $PATH", we don't want `$PATH` to be expanded.
              filename = expand_path(outtmpl).replace(sep, '') % template_dict
@@ -111,7 +112,7 @@
              # Temporary fix for #4787
              # 'Treat' all problem characters by passing filename through preferredencoding
              # to workaround encoding issues with subprocess on python2 @ Windows
-@@ -860,6 +932,10 @@
+@@ -860,6 +933,10 @@
  
          if result_type == 'video':
              self.add_extra_info(ie_result, extra_info)
@@ -122,7 +123,7 @@
              return self.process_video_result(ie_result, download=download)
          elif result_type == 'url':
              # We have to add extra_info to the results because it may be
-@@ -1133,7 +1209,6 @@
+@@ -1133,7 +1210,6 @@
          SINGLE = 'SINGLE'
          GROUP = 'GROUP'
          FormatSelector = collections.namedtuple('FormatSelector', ['type', 'selector', 'filters'])
@@ -130,7 +131,7 @@
          def _parse_filter(tokens):
              filter_parts = []
              for type, string, start, _, _ in tokens:
-@@ -1911,9 +1986,10 @@
+@@ -1911,9 +1987,10 @@
                          for f in requested_formats:
                              new_info = dict(info_dict)
                              new_info.update(f)
@@ -144,3 +145,12 @@
                              if not ensure_dir_exists(fname):
                                  return
                              downloaded.append(fname)
+@@ -1925,6 +2002,8 @@
+                     # Just a single file
+                     success = dl(filename, info_dict)
+             except (compat_urllib_error.URLError, compat_http_client.HTTPException, socket.error) as err:
++                import traceback
++                print(traceback.format_exc())
+                 self.report_error('unable to download video data: %s' % error_to_compat_str(err))
+                 return
+             except (OSError, IOError) as err:

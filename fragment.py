@@ -19,10 +19,7 @@ class HttpQuietDownloader(HttpFD):
         pass
 
 # hole patch:
-from ..utils import get_fs_max, get_max_path
-from ..utils import sanitize_path # not mine sanitize_"patch"
-arg_cut = -1
-fs_f_max = get_fs_max()
+from ..utils import patch_get_max_path
 
 class FragmentFD(FileDownloader):
     """
@@ -103,22 +100,10 @@ class FragmentFD(FileDownloader):
     def _download_fragment(self, ctx, frag_url, info_dict, headers=None):
 
         # hole patch:
-        tp = os.path.split(ctx['tmpfilename'])[1]
-        if '-' in tp:
-            tp = tp.split('-')[0]
-        elif '.f' in tp: # last resort if no '-'(which shouldn't be if set '-' in format outside), possible confict if run multiple threads of youtube-dl
-            tp = tp.split('.f')[0]
-        elif '.' in tp:
-            tp = tp.split('.')[0]
-        tpd = os.path.split(ctx['tmpfilename'])[0]
-        t = '-Frag' + str(ctx['fragment_index'])
-        redundant_part = '.part.part' # sacrifice 10 bytes 
-        fpart = get_max_path(arg_cut, fs_f_max, tp, t + redundant_part, False) + t
-        #fragment_filename = '%s-Frag%d' % (tp, ctx['fragment_index'])
-        fragment_filename = os.path.abspath( os.path.join(tpd, '{}'.format( fpart )) )
-        #print('frm pre: ' + repr(fragment_filename))
-        fragment_filename = sanitize_path(fragment_filename)
-        #print('frm post: ' + repr(fragment_filename))
+        #print('[patch] From _download_fragment: ')
+        fragment_filename = patch_get_max_path( ctx['tmpfilename'], '-Frag' + str(ctx['fragment_index']) )
+        #fragment_filename = ctx['tmpfilename'] + '-Frag' + str(ctx['fragment_index']) 
+        #print('[patch] frag f: ' + repr(fragment_filename) )
 
         success = ctx['dl'].download(fragment_filename, {
             'url': frag_url,
@@ -126,7 +111,12 @@ class FragmentFD(FileDownloader):
         })
         if not success:
             return False, None
+
+        #print('[patch] frag f ctx success: ' + repr(ctx['tmpfilename']) )
+        #print('[patch] frag f success: ' + repr(fragment_filename) )
         down, frag_sanitized = sanitize_open(fragment_filename, 'rb')
+        #print('[patch] frag f frag_sanitized: ' + repr(frag_sanitized) )
+
         ctx['fragment_filename_sanitized'] = frag_sanitized
         frag_content = down.read()
         down.close()

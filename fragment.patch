@@ -1,41 +1,38 @@
 --- fragment.py.orig	2020-09-01 04:54:29.484926159 +0800
-+++ fragment.py	2020-09-01 05:09:15.941704446 +0800
-@@ -18,6 +18,11 @@
++++ fragment.py	2020-09-01 21:13:56.796056123 +0800
+@@ -18,6 +18,8 @@
      def to_screen(self, *args, **kargs):
          pass
  
 +# hole patch:
-+from ..utils import get_fs_max, get_max_path
-+from ..utils import sanitize_path # not mine sanitize_"patch"
-+arg_cut = -1
-+fs_f_max = get_fs_max()
++from ..utils import patch_get_max_path
  
  class FragmentFD(FileDownloader):
      """
-@@ -96,7 +101,25 @@
+@@ -96,14 +98,25 @@
          frag_index_stream.close()
  
      def _download_fragment(self, ctx, frag_url, info_dict, headers=None):
 -        fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index'])
 +
 +        # hole patch:
-+        tp = os.path.split(ctx['tmpfilename'])[1]
-+        if '-' in tp:
-+            tp = tp.split('-')[0]
-+        elif '.f' in tp: # last resort if no '-'(which shouldn't be if set '-' in format outside), possible confict if run multiple threads of youtube-dl
-+            tp = tp.split('.f')[0]
-+        elif '.' in tp:
-+            tp = tp.split('.')[0]
-+        tpd = os.path.split(ctx['tmpfilename'])[0]
-+        t = '-Frag' + str(ctx['fragment_index'])
-+        redundant_part = '.part.part' # sacrifice 10 bytes 
-+        fpart = get_max_path(arg_cut, fs_f_max, tp, t + redundant_part, False) + t
-+        #fragment_filename = '%s-Frag%d' % (tp, ctx['fragment_index'])
-+        fragment_filename = os.path.abspath( os.path.join(tpd, '{}'.format( fpart )) )
-+        #print('frm pre: ' + repr(fragment_filename))
-+        fragment_filename = sanitize_path(fragment_filename)
-+        #print('frm post: ' + repr(fragment_filename))
++        #print('[patch] From _download_fragment: ')
++        fragment_filename = patch_get_max_path( ctx['tmpfilename'], '-Frag' + str(ctx['fragment_index']) )
++        #fragment_filename = ctx['tmpfilename'] + '-Frag' + str(ctx['fragment_index']) 
++        #print('[patch] frag f: ' + repr(fragment_filename) )
 +
          success = ctx['dl'].download(fragment_filename, {
              'url': frag_url,
              'http_headers': headers or info_dict.get('http_headers'),
+         })
+         if not success:
+             return False, None
++
++        #print('[patch] frag f ctx success: ' + repr(ctx['tmpfilename']) )
++        #print('[patch] frag f success: ' + repr(fragment_filename) )
+         down, frag_sanitized = sanitize_open(fragment_filename, 'rb')
++        #print('[patch] frag f frag_sanitized: ' + repr(frag_sanitized) )
++
+         ctx['fragment_filename_sanitized'] = frag_sanitized
+         frag_content = down.read()
+         down.close()

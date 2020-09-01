@@ -5715,8 +5715,9 @@ if ('window' in plat) or plat.startswith('win'):
 else:
     IS_WIN = False
 WIN_MAX_PATH = 255 # not really working if no \\?\\ prefix in full path
+arg_cut = -1
 
-def get_max_path(arg_cut, fs_f_max, fpart_excluded_immutable, immutable, replace_dot):
+def get_max_path(fs_f_max, fpart_excluded_immutable, immutable, replace_dot):
     #print('before f: ' + fpart_excluded_immutable)
     if arg_cut >= 0:
         fpart_excluded_immutable = fpart_excluded_immutable[:arg_cut]
@@ -5774,7 +5775,6 @@ def sanitize_patch(path):
         else:
             return ''
 
-
 def get_fs_max():
     fs_f_max = None
     if IS_WIN: # Sorry but I don't bother to fix WIN_MAX_PATH which nid prefix \\?\\ in full path
@@ -5795,3 +5795,33 @@ def get_fs_max():
         if fs_f_max is None:
             fs_f_max = os.statvfs('.').f_namemax
     return fs_f_max
+
+fs_f_max = get_fs_max()
+# Args: file_path, new_field_to_add
+def patch_get_max_path(fp, add):
+    # hole patch:
+    #print('orig frag: ' + repr(fp))
+    bf = os.path.split(fp)[1] #bf: base filename
+    if '-' in bf:
+        f_title = bf.split('-')[0]
+        sep = '-'
+    elif '.f' in bf: # last resort if no '-'(which shouldn't be if set '-' in format outside), possible conflict if run multiple threads of youtube-dl
+        f_title = bf.split('.f')[0]
+        sep = '.f'
+    elif '.' in bf:
+        f_title = bf.split('.')[0]
+        sep = '.'
+    else:
+        f_title = '.part.part'
+        sep = '.part'
+    redundant_part = sep + sep.join(bf.split(sep)[1:]) # sacrifice bytes dynamically
+    #print('rp: '+ repr(redundant_part) + ' Add: ' + repr(add))
+    f_dir = os.path.split(fp)[0]
+    # .part is for later
+    fpart = get_max_path(fs_f_max, f_title, redundant_part + add + '.part', False) + (redundant_part + add)
+    new_fp = os.path.abspath( os.path.join(f_dir, '{}'.format( fpart )) )
+    #print('frm pre: ' + repr(new_fp))
+    new_fp = sanitize_path(new_fp)
+    #print('frm post: ' + repr(new_fp))
+    return new_fp
+
