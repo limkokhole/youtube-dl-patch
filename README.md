@@ -41,15 +41,15 @@ Patch based on file at:
 #### Diff the relevant .py files with .py.orig files of this patch to know not much different with the original file of this patch: 
     xb@dnxb:/tmp/yt$ diff /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py ~/youtube-dl-patch/YoutubeDL.py.orig
     xb@dnxb:/tmp/yt$ diff /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/utils.py ~/youtube-dl-patch/utils.py.orig 
-    xb@dnxb:/tmp/yt$ diff /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/downloader/fragment.py ~/youtube-dl-patch/fragment.py.orig
+    xb@dnxb:/tmp/yt$ diff /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/downloader/fragment.py ~/youtube-dl-patch/downloader/fragment.py.orig
     xb@dnxb:/tmp/yt$ 
 
-#### patch the files (Note: fragment.py is under downloader/):
+#### patch the files:
     xb@dnxb:/tmp/yt$ patch /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py <~/youtube-dl-patch/YoutubeDL.patch 
     patching file /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py
     xb@dnxb:/tmp/yt$ patch /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/utils.py <~/youtube-dl-patch/utils.patch 
     patching file /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/utils.py
-    xb@dnxb:/tmp/yt$ patch /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/downloader/fragment.py <~/youtube-dl-patch/fragment.patch
+    xb@dnxb:/tmp/yt$ patch /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/downloader/fragment.py <~/youtube-dl-patch/downloader/fragment.patch
     patching file /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/downloader/fragment.py
     xb@dnxb:/tmp/yt$
 
