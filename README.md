@@ -16,7 +16,7 @@ Patch based on file at:
     - https://github.com/ytdl-org/youtube-dl/commit/9cd5f54e31bcfde1f0491d2c7c3e2b467386f3d6#diff-41e5a35fe85b286fe4b4f735f8ac8fae (utils.py, [or my backup utils.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/utils.py.orig))  
     - https://github.com/ytdl-org/youtube-dl/commit/3bce4ff7d96d845ec67ffe8e9e2715474f190d89 (downloader/fragment.py, [or my backup fragment.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/fragment.py.orig))  
 
-#### Assume you installed this way:
+#### Assume you installed this way (Not `https://yt-dl.org/latest/youtube-dl` which is python 2 binary):
     xb@dnxb:/tmp/yt$ python3 -m pip install -U youtube_dl
     Collecting youtube_dl
       Using cached https://files.pythonhosted.org/packages/61/1c/a86837929eff24827b117d577584cc1a2a85dfdb5a91465d17c8b298f0d0/youtube_dl-2020.7.28-py2.py3-none-any.whl
