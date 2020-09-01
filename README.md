@@ -32,7 +32,7 @@ Patch based on file at:
     [download] Destination: 𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑-TqA2WVwbI6Y.f247.webm
     ERROR: unable to download video data: [Errno 36] File name too long: '𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑-TqA2WVwbI6Y.f247.webm.ytdl'
 
-#### strace to know the library path:
+#### strace to know the library path (the path probably at e.g. `~/.virtualenvs/youtubedlbuild/lib/python3.6/site-packages/youtube_dl-2020.7.28-py3.6.egg/youtube_dl/` if you use virtualenvs):
     xb@dnxb:/tmp/yt$ strace -f -e file /home/xiaobai/.local/bin/youtube-dl 'TqA2WVwbI6Y' |& grep YoutubeDL.py
     stat("/home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py", {st_mode=S_IFREG|0664, st_size=111152, ...}) = 0
     stat("/home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py", {st_mode=S_IFREG|0664, st_size=111152, ...}) = 0
