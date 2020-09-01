@@ -49,12 +49,26 @@ Patch based on file at:
     patching file /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/downloader/fragment.py
     xb@dnxb:/tmp/yt$
 
-#### Download again will success:
-    xb@dnxb:/tmp/yt$ ls -la
-    total 344
-    drwxrwxr-x  2 xiaobai xiaobai   4096 Sep   1 22:07 .
-    drwxrwxrwt 31 root    root    122880 Sep   1 22:03 ..
-    -rw-rw-r--  1 xiaobai xiaobai 220912 Sep   1 22:07 𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.mkv
+#### Download again should success:
+
+    xb@dnxb:/tmp/yt$ youtube-dl 'TqA2WVwbI6Y'
+    [youtube] TqA2WVwbI6Y: Downloading webpage
+    [youtube] TqA2WVwbI6Y: Downloading MPD manifest
+    WARNING: Requested formats are incompatible for merge and will be merged into mkv.
+    [dashsegments] Total fragments: 4
+    [download] Destination: /tmp/yt/𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.f247.webm
+    [download] 100% of 23.14KiB in 00:00
+    [dashsegments] Total fragments: 3
+    [download] Destination: /tmp/yt/𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.f140.m4a
+    [download] 100% of 191.15KiB in 00:00
+    [ffmpeg] Merging formats into "/tmp/yt/𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.mkv"
+    Deleting original file /tmp/yt/𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.f247.webm (pass -k to keep)
+    Deleting original file /tmp/yt/𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.f140.m4a (pass -k to keep)
+    xb@dnxb:/tmp/yt$
+    xb@dnxb:/tmp/yt$ ls -lh
+    total 216K
+    -rw-rw-r-- 1 xiaobai xiaobai 216K Sep   1 22:47 𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.mkv
+    xb@dnxb:/tmp/yt$ 
 
 #### Copy the filename above, touch a new file by adding suffix `.part𪍑`, it shows file too long:
     xb@dnxb:/tmp/yt$ touch '𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.mkv.part𪍑'
