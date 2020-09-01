@@ -1,5 +1,5 @@
 --- YoutubeDL.py.orig	2020-08-03 01:59:36.281413712 +0800
-+++ YoutubeDL.py	2020-09-01 21:24:18.016665176 +0800
++++ YoutubeDL.py	2020-09-01 22:36:13.621197701 +0800
 @@ -42,6 +42,10 @@
      compat_urllib_request,
      compat_urllib_request_DataHandler,
@@ -145,12 +145,3 @@
                              if not ensure_dir_exists(fname):
                                  return
                              downloaded.append(fname)
-@@ -1925,6 +2002,8 @@
-                     # Just a single file
-                     success = dl(filename, info_dict)
-             except (compat_urllib_error.URLError, compat_http_client.HTTPException, socket.error) as err:
-+                import traceback
-+                print(traceback.format_exc())
-                 self.report_error('unable to download video data: %s' % error_to_compat_str(err))
-                 return
-             except (OSError, IOError) as err:
