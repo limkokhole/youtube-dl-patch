@@ -70,11 +70,11 @@ Patch based on file at:
     -rw-rw-r-- 1 xiaobai xiaobai 216K Sep   1 22:47 𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.mkv
     xb@dnxb:/tmp/yt$ 
 
-#### Copy the filename above, touch a new file by adding suffix `.part𪍑`, it shows file too long:
+#### Copy the filename above, touch a new file by adding suffix `.part𪍑`, it shows file name too long:
     xb@dnxb:/tmp/yt$ touch '𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.mkv.part𪍑'
     touch: cannot touch '𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.mkv.part𪍑': File name too long
 
-#### Once remove the `𪍑` but remains the temporary extension `.part`, now it able to touch. What's that means is this patch cut the filename precisely.
+#### Once remove the `𪍑` but remains the temporary extension `.part`, now it able to touch. What's that means is this patch cut the file name precisely.
     xb@dnxb:/tmp/yt$ touch '𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑...-20200630-TqA2WVwbI6Y.mkv.part'
     xb@dnxb:/tmp/yt$ 
 
