@@ -7,10 +7,6 @@ Longer filename will truncated and endswith ... in title part.
 
 To make the patch simpler, my patch always sacrifices 5 bytes for ".part" even though final filename doesn't include ".part".
 
-To use this patch, you can simply diff the files of .py (not py.orig) with your youtube-dl files and replace directly if both same. Or else you need run `patch your_file <my.pt.patch` to patch, or diff to manually copy-paste. 
-
-If you not sure where the library is use, you may try `strace -f -e open,openat youtube-dl video_id` `OR strace -f -e file youtube-dl video_id` to figure out.
-
 Patch based on file at:  
     - https://github.com/ytdl-org/youtube-dl/commit/fca6dba8b80286ae6d3ca0a60c4799c220a52650 (YoutubeDL.py, [or my backup YoutubeDL.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/YoutubeDL.py.orig))  
     - https://github.com/ytdl-org/youtube-dl/commit/9cd5f54e31bcfde1f0491d2c7c3e2b467386f3d6#diff-41e5a35fe85b286fe4b4f735f8ac8fae (utils.py, [or my backup utils.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/utils.py.orig))  
@@ -32,7 +28,7 @@ Patch based on file at:
     [download] Destination: 𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑-TqA2WVwbI6Y.f247.webm
     ERROR: unable to download video data: [Errno 36] File name too long: '𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑𪍑-TqA2WVwbI6Y.f247.webm.ytdl'
 
-#### strace to know the library path (the path probably at e.g. `~/.virtualenvs/youtubedlbuild/lib/python3.6/site-packages/youtube_dl-2020.7.28-py3.6.egg/youtube_dl/` if you use virtualenvs):
+#### `strace` to know the library path (the path probably at e.g. `~/.virtualenvs/youtubedlbuild/lib/python3.6/site-packages/youtube_dl-2020.7.28-py3.6.egg/youtube_dl/` if you use virtualenvs):
     xb@dnxb:/tmp/yt$ strace -f -e file /home/xiaobai/.local/bin/youtube-dl 'TqA2WVwbI6Y' |& grep YoutubeDL.py
     stat("/home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py", {st_mode=S_IFREG|0664, st_size=111152, ...}) = 0
     stat("/home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py", {st_mode=S_IFREG|0664, st_size=111152, ...}) = 0
@@ -44,7 +40,7 @@ Patch based on file at:
     xb@dnxb:/tmp/yt$ diff /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/downloader/fragment.py ~/youtube-dl-patch/downloader/fragment.py.orig
     xb@dnxb:/tmp/yt$ 
 
-#### patch the files:
+#### `patch` the files (or replace with `.py` if no difference above):
     xb@dnxb:/tmp/yt$ patch /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py <~/youtube-dl-patch/YoutubeDL.patch 
     patching file /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/YoutubeDL.py
     xb@dnxb:/tmp/yt$ patch /home/xiaobai/.local/lib/python3.6/site-packages/youtube_dl/utils.py <~/youtube-dl-patch/utils.patch 
