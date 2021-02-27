@@ -13,8 +13,6 @@ from ..utils import (
     sanitized_Request,
 )
 
-# hole patch:                                                                                                                                        
-from ..utils import patch_get_max_path
 
 class HttpQuietDownloader(HttpFD):
     def to_screen(self, *args, **kargs):
@@ -98,10 +96,7 @@ class FragmentFD(FileDownloader):
         frag_index_stream.close()
 
     def _download_fragment(self, ctx, frag_url, info_dict, headers=None):
-
-        fragment_filename = patch_get_max_path( ctx['tmpfilename'], '-Frag' + str(ctx['fragment_index']) ) #hole patch
-        #fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index']) # orig
-
+        fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index'])
         fragment_info_dict = {
             'url': frag_url,
             'http_headers': headers or info_dict.get('http_headers'),
