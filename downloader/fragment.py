@@ -13,13 +13,13 @@ from ..utils import (
     sanitized_Request,
 )
 
+# hole patch:                                                                                                                                        
+from ..utils import patch_get_max_path
 
 class HttpQuietDownloader(HttpFD):
     def to_screen(self, *args, **kargs):
         pass
 
-# hole patch:
-from ..utils import patch_get_max_path
 
 class FragmentFD(FileDownloader):
     """
@@ -99,24 +99,19 @@ class FragmentFD(FileDownloader):
 
     def _download_fragment(self, ctx, frag_url, info_dict, headers=None):
 
-        # hole patch:
-        #print('[patch] From _download_fragment: ')
-        fragment_filename = patch_get_max_path( ctx['tmpfilename'], '-Frag' + str(ctx['fragment_index']) )
-        #fragment_filename = ctx['tmpfilename'] + '-Frag' + str(ctx['fragment_index']) 
-        #print('[patch] frag f: ' + repr(fragment_filename) )
+        fragment_filename = patch_get_max_path( ctx['tmpfilename'], '-Frag' + str(ctx['fragment_index']) ) #hole patch
+        #fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index']) # orig
 
-        success = ctx['dl'].download(fragment_filename, {
+        fragment_info_dict = {
             'url': frag_url,
             'http_headers': headers or info_dict.get('http_headers'),
-        })
+        }
+        success = ctx['dl'].download(fragment_filename, fragment_info_dict)
         if not success:
             return False, None
-
-        #print('[patch] frag f ctx success: ' + repr(ctx['tmpfilename']) )
-        #print('[patch] frag f success: ' + repr(fragment_filename) )
+        if fragment_info_dict.get('filetime'):
+            ctx['fragment_filetime'] = fragment_info_dict.get('filetime')
         down, frag_sanitized = sanitize_open(fragment_filename, 'rb')
-        #print('[patch] frag f frag_sanitized: ' + repr(frag_sanitized) )
-
         ctx['fragment_filename_sanitized'] = frag_sanitized
         frag_content = down.read()
         down.close()
@@ -271,6 +266,13 @@ class FragmentFD(FileDownloader):
             downloaded_bytes = ctx['complete_frags_downloaded_bytes']
         else:
             self.try_rename(ctx['tmpfilename'], ctx['filename'])
+            if self.params.get('updatetime', True):
+                filetime = ctx.get('fragment_filetime')
+                if filetime:
+                    try:
+                        os.utime(ctx['filename'], (time.time(), filetime))
+                    except Exception:
+                        pass
             downloaded_bytes = os.path.getsize(encodeFilename(ctx['filename']))
 
         self._hook_progress({

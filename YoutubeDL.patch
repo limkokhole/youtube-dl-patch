@@ -1,39 +1,30 @@
---- YoutubeDL.py.orig	2020-08-03 01:59:36.281413712 +0800
-+++ YoutubeDL.py	2020-09-01 22:36:13.621197701 +0800
-@@ -42,6 +42,10 @@
-     compat_urllib_request,
-     compat_urllib_request_DataHandler,
- )
-+
-+# hole patch:
-+from .utils import get_fs_max, get_max_path, sanitize_patch
-+
- from .utils import (
-     age_restricted,
-     args_to_str,
-@@ -112,6 +116,8 @@
+--- /home/xiaobai/Downloads/youtube-dl/3/lib/python3.8/site-packages/youtube_dl-2021.2.22-py3.8.egg/youtube_dl/YoutubeDL.py	2021-02-28 05:48:55.456548078 +0800
++++ /home/xiaobai/Downloads/youtube-dl/youtube-dl-patch/YoutubeDL.py	2021-02-28 06:45:18.125265736 +0800
+@@ -112,6 +112,9 @@
  if compat_os_name == 'nt':
      import ctypes
  
-+# hole patch
-+from pathlib import PurePath, Path
++# hole patch:                                                             
++from .utils import get_fs_max, get_max_path, sanitize_patch
++from pathlib import PurePath, Path 
  
  class YoutubeDL(object):
      """YoutubeDL class.
-@@ -631,7 +637,8 @@
+@@ -634,7 +637,7 @@
          except UnicodeEncodeError:
              self.to_screen('[download] The file has already been downloaded')
  
 -    def prepare_filename(self, info_dict):
-+
 +    def prepare_filename(self, info_dict, format_name=''):
          """Generate the output filename."""
          try:
              template_dict = dict(info_dict)
-@@ -660,6 +667,69 @@
+@@ -663,6 +666,71 @@
  
              outtmpl = self.params.get('outtmpl', DEFAULT_OUTTMPL)
  
++
++
 +            #''' 
 +            # Note: Only do for python 3 and Linux-like systems
 +            #print('hole style')
@@ -100,48 +91,20 @@
              # For fields playlist_index and autonumber convert all occurrences
              # of %(field)s to %(field)0Nd for backward compatibility
              field_size_compat_map = {
-@@ -709,7 +779,10 @@
-             # be expanded. For example, for outtmpl "%(title)s.%(ext)s" and
-             # title "Hello $PATH", we don't want `$PATH` to be expanded.
-             filename = expand_path(outtmpl).replace(sep, '') % template_dict
--
-+            #print('sep: ' + repr(sep))
-+            #print('outmpl: ' + repr(outtmpl))
-+            #print('template_dict: ' + repr(template_dict))
-+            #print('filename: ' + repr(filename))
-             # Temporary fix for #4787
-             # 'Treat' all problem characters by passing filename through preferredencoding
-             # to workaround encoding issues with subprocess on python2 @ Windows
-@@ -860,6 +933,10 @@
- 
-         if result_type == 'video':
-             self.add_extra_info(ie_result, extra_info)
-+            #print('ie: ' + repr(ie_result))
-+            #print('iet: ' + repr(type(ie_result)))
-+            #print('dw: ' + repr(download))
-+            #print('dwt: ' + repr(type(download)))
-             return self.process_video_result(ie_result, download=download)
-         elif result_type == 'url':
-             # We have to add extra_info to the results because it may be
-@@ -1133,7 +1210,6 @@
-         SINGLE = 'SINGLE'
-         GROUP = 'GROUP'
-         FormatSelector = collections.namedtuple('FormatSelector', ['type', 'selector', 'filters'])
--
-         def _parse_filter(tokens):
-             filter_parts = []
-             for type, string, start, _, _ in tokens:
-@@ -1911,9 +1987,10 @@
+@@ -1948,9 +2016,13 @@
                          for f in requested_formats:
                              new_info = dict(info_dict)
                              new_info.update(f)
 -                            fname = prepend_extension(
 -                                self.prepare_filename(new_info),
 -                                'f%s' % f['format_id'], new_info['ext'])
++
++                            fname = self.prepare_filename(new_info, 'f%s' % f['format_id']) # hole patch
++                            # orig:
 +                            #fname = prepend_extension(
-+                            fname = self.prepare_filename(new_info, 'f%s' % f['format_id'])
-+                            #'f%s' % f['format_id'], new_info['ext'])
-+                            #print('fname: ' + repr(fname))
++                            #    self.prepare_filename(new_info),
++                            #    'f%s' % f['format_id'], new_info['ext'])
++
                              if not ensure_dir_exists(fname):
                                  return
                              downloaded.append(fname)

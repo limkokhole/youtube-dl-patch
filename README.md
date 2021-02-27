@@ -8,9 +8,9 @@ Longer filename will truncated and endswith ... in title part.
 To make the patch simpler, my patch always sacrifices 5 bytes for ".part" even though final filename doesn't include ".part".
 
 Patch based on file at:  
-    - https://github.com/ytdl-org/youtube-dl/commit/fca6dba8b80286ae6d3ca0a60c4799c220a52650 (YoutubeDL.py, [or my backup YoutubeDL.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/YoutubeDL.py.orig))  
-    - https://github.com/ytdl-org/youtube-dl/commit/9cd5f54e31bcfde1f0491d2c7c3e2b467386f3d6#diff-41e5a35fe85b286fe4b4f735f8ac8fae (utils.py, [or my backup utils.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/utils.py.orig))  
-    - https://github.com/ytdl-org/youtube-dl/commit/3bce4ff7d96d845ec67ffe8e9e2715474f190d89 (downloader/fragment.py, [or my backup fragment.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/fragment.py.orig))  
+    - https://github.com/ytdl-org/youtube-dl/commit/142c584063ec02406e636522fe11d0d2be22b299 (YoutubeDL.py, [or my backup YoutubeDL.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/YoutubeDL.py.orig))  
+    - https://github.com/ytdl-org/youtube-dl/commit/e88c9ef62a4a26cc77370b741a4244d298c7d45a (utils.py, [or my backup utils.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/utils.py.orig))  
+    - https://github.com/ytdl-org/youtube-dl/commit/f4415faa4690cf71d61d90ad7e9a7f9980be9b50 (downloader/fragment.py, [or my backup fragment.py.orig](https://github.com/limkokhole/youtube-dl-patch/blob/master/fragment.py.orig))  
 
 #### Assume you installed this way (Not `https://yt-dl.org/latest/youtube-dl` which is python 2 binary):
     xb@dnxb:/tmp/yt$ python3 -m pip install -U youtube_dl

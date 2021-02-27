@@ -1,38 +1,23 @@
---- fragment.py.orig	2020-09-01 04:54:29.484926159 +0800
-+++ fragment.py	2020-09-01 21:13:56.796056123 +0800
-@@ -18,6 +18,8 @@
-     def to_screen(self, *args, **kargs):
-         pass
+--- /home/xiaobai/Downloads/youtube-dl/3/lib/python3.8/site-packages/youtube_dl-2021.2.22-py3.8.egg/youtube_dl/downloader/fragment.py	2021-02-28 05:48:55.468545393 +0800
++++ /home/xiaobai/Downloads/youtube-dl/youtube-dl-patch/downloader/fragment.py	2021-02-28 06:16:58.846847501 +0800
+@@ -13,6 +13,8 @@
+     sanitized_Request,
+ )
  
-+# hole patch:
++# hole patch:                                                                                                                                        
 +from ..utils import patch_get_max_path
  
- class FragmentFD(FileDownloader):
-     """
-@@ -96,14 +98,25 @@
+ class HttpQuietDownloader(HttpFD):
+     def to_screen(self, *args, **kargs):
+@@ -96,7 +98,10 @@
          frag_index_stream.close()
  
      def _download_fragment(self, ctx, frag_url, info_dict, headers=None):
 -        fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index'])
 +
-+        # hole patch:
-+        #print('[patch] From _download_fragment: ')
-+        fragment_filename = patch_get_max_path( ctx['tmpfilename'], '-Frag' + str(ctx['fragment_index']) )
-+        #fragment_filename = ctx['tmpfilename'] + '-Frag' + str(ctx['fragment_index']) 
-+        #print('[patch] frag f: ' + repr(fragment_filename) )
++        fragment_filename = patch_get_max_path( ctx['tmpfilename'], '-Frag' + str(ctx['fragment_index']) ) #hole patch
++        #fragment_filename = '%s-Frag%d' % (ctx['tmpfilename'], ctx['fragment_index']) # orig
 +
-         success = ctx['dl'].download(fragment_filename, {
+         fragment_info_dict = {
              'url': frag_url,
              'http_headers': headers or info_dict.get('http_headers'),
-         })
-         if not success:
-             return False, None
-+
-+        #print('[patch] frag f ctx success: ' + repr(ctx['tmpfilename']) )
-+        #print('[patch] frag f success: ' + repr(fragment_filename) )
-         down, frag_sanitized = sanitize_open(fragment_filename, 'rb')
-+        #print('[patch] frag f frag_sanitized: ' + repr(frag_sanitized) )
-+
-         ctx['fragment_filename_sanitized'] = frag_sanitized
-         frag_content = down.read()
-         down.close()
