@@ -1,6 +1,8 @@
 # youtube-dl-patch
 my patch to youtube-dl
 
+## No longer maintain, please use command at https://github.com/limkokhole/yt-dlp-maxpath
+
 1. Fixed file name too long which is the most critical bug in youtube-dl especially to non-English video title and Twitter/Facebook, now will truncate by max 250 bytes + ".part" = 255 bytes, or 242(docker), 143(eCryptfs) accurately(respect utf-8). Only fixed in Linux(No Mac to test) and python 3(python 2 need count length without `.encode('utf-8')` and need decide allow incomplete unicode or not).  (Windows need \/\/?/\/ prefix in full path) . 
 I don't play with complicated format, only hard-coded my desired output format `'./%(title)s-%(upload_date)s-%(id)s.%(ext)s'`
 Longer filename will truncated and endswith ... in title part.  
